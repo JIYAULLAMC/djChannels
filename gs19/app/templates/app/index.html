@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Group Name : {{groupname}}</h2>
+
+    <textarea name="" id="chat-log" cols="40" rows="20">
+
+    </textarea>
+    <br>
+    Message : <input type="text" name="" id="input-message">
+    <input type="submit" id="input-button" value="Send" size="22">
+
+    {{groupname|json_script:"group_name"}}
+
+    <script>
+        // for sync
+        const groupName = JSON.parse(document.getElementById("group_name").textContent)
+        var ws = new WebSocket("ws://" + window.location.host + "/ws/jwc/" + groupName + "/");
+        // async
+        // var ws = new WebSocket("ws://" + window.location.host + "/ws/ajwc/" + groupName + "/");
+        ws.onopen = () =>  console.log("+++++++++connected !") 
+
+        ws.onmessage = (event) => {
+            data = JSON.parse(event.data)
+            console.log("++++++++++++ event is ", data)
+            document.querySelector("#chat-log").value += (data['message'] + '\n')
+        }
+
+        document.getElementById("input-button").onclick = function() {
+            console.log("++++++++++++button clicked !")
+            const input_ele = document.getElementById("input-message")
+            console.log("input element is ", input_ele)
+            const input_value = input_ele.value
+            ws.send(JSON.stringify({'msg': input_value}))
+            input_ele.value = ""
+        }
+
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>HOME PAGE</h2>
+    <h3>count is : </h3>
+
+
+    <script>
+        var ws = new WebSocket('ws://127.0.0.1:8000/ws/sc/');
+        console.log("++++++++++++++++++++", ws)
+
+        /*
+         ws.onopen = function(event){
+            console.log("the socket is open +++++++", event)
+            ws.send("message fron the client ")
+        }
+
+        ws.onmessage = function(event){
+            console.log("this socket in message state +++++", event)
+        }
+        ws.onerror = function(event){
+            console.log('this is the error', event)
+        }
+
+        ws.onclose = function(event){
+            console.log('this is the close method !')
+        }
+
+        */
+
+
+
+        ws.addEventListener('open', (event) => {
+            console.log("open event listener")
+            ws.send("message from client!")
+        })
+
+        ws.addEventListener('message', (event) => {
+            console.log("message event listener", event)
+        })
+        ws.addEventListener('error', (event) => {
+            console.log("error event listener")
+        })
+        ws.addEventListener('close', (event) => {
+            console.log("close event listener")
+        })
+  
+
+
+
+
+
+
+    </script>   
+</body>
+</html>

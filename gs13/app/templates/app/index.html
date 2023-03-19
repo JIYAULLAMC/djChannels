@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Index page NO : <span id="ct"></span></h2>
+
+    <h2>IMP :        #make sure that while trying this try in postman and then try in  browser
+    </h2>
+    <h3>coze some time it will not come directly </h3>
+
+
+    <script>
+        console.log("the script is running!")
+
+        const ws = new WebSocket("ws://127.0.0.1:8000/ws/wsc/")
+
+        ws.onopen = function(event) {
+            console.log("event is ", event)
+            ws.send("message from client !")
+        }
+
+        ws.onmessage = function(event){
+            console.log("event data is ", event)
+            document.getElementById('ct').innerText = event.data
+        }
+
+    </script>
+    
+</body>
+</html>

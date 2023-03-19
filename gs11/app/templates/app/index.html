@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2> GROUP NAME:-  {{groupname}} </h2>
+
+    <textarea name="" id="chat-log" cols="60" rows="20">
+        {% for chat in chats %}
+            {{ chat.content }}
+        {% endfor %}
+    </textarea>
+    <br>
+    Message : <input type="text" name="" id="chat-message-input" size="50">
+    <br><br>
+    click here to submit : <input type="submit" value="submit" id="chat-message-submit">
+
+    <br>
+    <br> <p style="color:red;"> Note or Imp : be care full what you are running or calling either sync or asyn</p>
+    <!-- using python data from the view directly to the javascript  -->
+
+    {{groupname|json_script:"group-name"}}
+
+
+    <script>
+        // accessing the python value in js
+
+        const groupName = JSON.parse(document.getElementById('group-name').textContent)
+
+        console.log("group name is ",groupName)
+
+        // for dynamin group
+        var ws = new WebSocket('ws://' + window.location.host +'/ws/sc/' + groupName + '/')
+        
+        // var ws = new WebSocket('ws://' + window.location.host +'/ws/ac/' + groupName + '/')
+
+        console.log("group web socket is ", ws)
+
+        ws.onopen = function(event){
+            console.log("connection is open 24---------",event)
+        }
+
+        /*
+
+        ws.onmessage = function(event){           
+            const data = JSON.parse(event.data)
+            console.log('message is -----------', data.msg)
+            console.log("user name is ++++++++++++++", data.user, typeof(data.user))
+            document.querySelector("#chat-log").value += ( data.user + ":-  " + data.msg + '\n')
+        }
+
+        */
+        // how to show along with user name
+        ws.onmessage = function(event){           
+            const data = JSON.parse(event.data)
+            console.log('message is -----------', data.msg)
+            console.log("user name is ++++++++++++++", data.user, typeof(data.user))
+            document.querySelector("#chat-log").value += ( data.user + ":-  " + data.msg + '\n')
+        }
+
+        ws.onclose = function(event){
+            console.log("connection is closed 33----------",event)
+            console.error("error ocuured")
+        }
+
+        document.getElementById('chat-message-submit').onclick = function(event){
+            
+            const messageInputDom = document.getElementById("chat-message-input");
+            const message = messageInputDom.value;
+            const string_message = JSON.stringify({ 'msg' : message})
+            console.log("message is 48+++++", message)
+            ws.send(string_message)
+            messageInputDom.value = " "
+
+        }
+
+
+
+
+
+    </script>
+    
+</body>
+</html>
